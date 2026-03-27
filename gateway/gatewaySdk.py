@@ -165,6 +165,33 @@ class gatewaySdk:
             return {"code": 0, "message": e}
 
     # **
+    # * Get merchant balance
+    # * @returns code,message,data
+    # */
+    @staticmethod
+    def balance() -> dict:
+        try:
+            token = gatewaySdk.__getToken()
+            if gatewaySdk.__isnull(token):
+                return {"code": 0, "message": "token is null"}
+            requestUrl = "gateway/" + gatewayCfg.VERSION_NO + "/getBalance"
+            cnst = gatewaySdk.__generateConstant(requestUrl)
+            bodyJson = "{}"
+            base64ReqBody = gatewaySdk.__sortedAfterToBased64(bodyJson)
+            signature = gatewaySdk.__createSignature(cnst, base64ReqBody)
+            encryptData = gatewaySdk.__symEncrypt(base64ReqBody)
+            json = {"data": encryptData}
+            dict = gatewaySdk.__post(requestUrl, token, signature,
+                                    json, cnst["nonceStr"], cnst["timestamp"])
+            if gatewaySdk.__isnull(dict["code"]) == False and gatewaySdk.__isnull(dict["encryptedData"]) == False and dict["code"] != 1:
+                return dict
+            decryptedData = gatewaySdk.symDecrypt(dict["encryptedData"])
+            result = gatewaySdk.__tryParseJson(decryptedData)
+            return result
+        except Exception as e:
+            return {"code": 0, "message": e}
+
+    # **
     # * get server token
     # * @returns token
     # */

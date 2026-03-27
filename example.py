@@ -32,6 +32,11 @@ print(withdrawResult)
 detailResult = gatewaySdk.detail("10921", 1)
 print(detailResult)
 
+# Here is an example of a balance
+# return balance result: code,message,data
+balanceResult = gatewaySdk.balance()
+print(balanceResult)
+
 # Decrypt the encrypted information in the callback
 jsonstr = gatewaySdk.symDecrypt("encryptedData .........")
 print(jsonstr)
